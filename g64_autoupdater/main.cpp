@@ -23,6 +23,7 @@
     GlobalLUA->Call(1, 0); \
     GlobalLUA->Pop(); \
 } while(0)
+#define REPO_URL "https://api.github.com/repos/ckosmic/g64/releases"
 
 using namespace std;
 using namespace GarrysMod::Lua;
@@ -128,7 +129,7 @@ int download_zip(const char* url, const char* outFile)
 	CURL* curl = curl_easy_init();
 	FILE* fp = fopen(outFile, "wb");
 
-	curl_easy_setopt(curl, CURLOPT_URL, url);
+	curl_easy_setopt(curl, CURLOPT_URL, REPO_URL);
 	curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, file_callback);
