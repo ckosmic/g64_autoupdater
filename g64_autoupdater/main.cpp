@@ -83,6 +83,12 @@ int unpack_zip(const char* path, const char* extractPath)
 
 		FILE* fp = fopen(fileStat.name, "wb");
 
+		if (fp == NULL)
+		{
+			// Couldn't overwrite a file, which is normal since we can't modify an updater file in use
+			continue;
+		}
+
 		struct zip_file* zipPtr = NULL;
 		if ((zipPtr = zip_fopen_index(z, i, 0)) == NULL)
 		{
@@ -129,7 +135,7 @@ int download_zip(const char* url, const char* outFile)
 	CURL* curl = curl_easy_init();
 	FILE* fp = fopen(outFile, "wb");
 
-	curl_easy_setopt(curl, CURLOPT_URL, REPO_URL);
+	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, file_callback);
@@ -147,10 +153,8 @@ int download_zip(const char* url, const char* outFile)
 
 int get_releases()
 {
-	const string url = "https://api.github.com/repos/ckosmic/g64/releases";
-
 	CURL* curl = curl_easy_init();
-	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curl, CURLOPT_URL, REPO_URL);
 	curl_easy_setopt(curl, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36");
 	curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
